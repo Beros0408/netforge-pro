@@ -1,0 +1,11 @@
+ai_engine
+api_backend
+correction_engine
+discovery_engine
+frontend
+graph_database
+parser_engine
+reporting
+rule_engine
+security_module
+shared
