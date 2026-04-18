@@ -18,6 +18,7 @@ class ACLType(str, Enum):
 
     STANDARD = "standard"
     EXTENDED = "extended"
+    IPV4_EXTENDED = "extended"
     NAMED_STANDARD = "named_standard"
     NAMED_EXTENDED = "named_extended"
     IPV6 = "ipv6"
@@ -72,6 +73,7 @@ class ACL(BaseModel):
 
     name: str = Field(..., description="ACL name or number")
     acl_type: ACLType = Field(default=ACLType.UNKNOWN, description="ACL type")
+    description: Optional[str] = Field(None, description="ACL description")
     entries: list[ACLEntry] = Field(default_factory=list, description="ACEs in order")
     interface_in: list[str] = Field(
         default_factory=list, description="Inbound application interfaces"
@@ -87,6 +89,11 @@ class ACL(BaseModel):
 
     def __str__(self) -> str:
         return f"ACL({self.name}, {self.acl_type.value}, {self.entry_count} entries)"
+
+    @property
+    def type(self) -> ACLType:
+        """Compatibility helper for older parser field names."""
+        return self.acl_type
 
 
 # ---------------------------------------------------------------------------
@@ -188,4 +195,6 @@ class NATRule(BaseModel):
     acl_name: Optional[str] = Field(
         None, description="ACL selecting traffic for dynamic NAT"
     )
+    rule_type: Optional[str] = Field(None, description="Type of NAT rule")
+    address_group: Optional[str] = Field(None, description="NAT address group")
     vrf: Optional[str] = Field(None, description="VRF name")

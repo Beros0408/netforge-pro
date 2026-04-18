@@ -55,6 +55,11 @@ class VLAN(BaseModel):
     def __hash__(self) -> int:
         return hash(self.vlan_id)
 
+    @property
+    def id(self) -> int:
+        """Compatibility helper for older parser field names."""
+        return self.vlan_id
+
 
 def parse_vlan_range(vlan_range: str) -> list[int]:
     """
@@ -81,9 +86,12 @@ def parse_vlan_range(vlan_range: str) -> list[int]:
     if vlan_range == "all":
         return list(range(1, 4095))
 
+    normalized = vlan_range.replace(" to ", "-").replace(" ", ",")
     result: list[int] = []
-    for part in vlan_range.split(","):
+    for part in normalized.split(","):
         part = part.strip()
+        if not part:
+            continue
         if "-" in part:
             start_str, end_str = part.split("-", 1)
             start, end = int(start_str), int(end_str)

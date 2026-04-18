@@ -13,6 +13,8 @@ from ..models.device import ParsedDevice, VendorType
 from ..parsers.base_parser import BaseParser, ParserError, VendorDetectionError
 from ..parsers.cisco.ios_parser import CiscoIOSParser
 from ..parsers.fortinet.fortios_parser import FortiOSParser
+from ..parsers.huawei.vrp_parser import HuaweiVRPParser
+from ..parsers.arista.eos_parser import AristaEOSParser
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,8 @@ logger = logging.getLogger(__name__)
 _PARSER_REGISTRY: list[type[BaseParser]] = [
     CiscoIOSParser,
     FortiOSParser,
+    HuaweiVRPParser,
+    AristaEOSParser,
 ]
 
 

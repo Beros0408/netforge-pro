@@ -11,20 +11,37 @@ from pydantic import BaseModel, Field, field_validator
 
 from .interface import Interface
 from .vlan import VLAN
-from .routing import Route, OSPFProcess, BGPProcess
+from .routing import Route, OSPFProcess, BGPProcess, VRF
 from .security import ACL, FirewallPolicy, NATRule
+
+
+class OSType(str, Enum):
+    """Operating system type for a parsed device."""
+
+    VRP = "vrp"
+    IOS = "ios"
+    IOS_XE = "ios_xe"
+    NXOS = "nxos"
+    EOS = "eos"
+    FORTIOS = "fortios"
+    UNKNOWN = "unknown"
 
 
 class VendorType(str, Enum):
     """Supported network OS / vendor identifiers."""
 
-    CISCO_IOS = "cisco_ios"
-    CISCO_NXOS = "cisco_nxos"
-    CISCO_IOSXE = "cisco_iosxe"
-    CISCO_IOSXR = "cisco_iosxr"
-    FORTINET_FORTIOS = "fortinet_fortios"
-    HUAWEI_VRP = "huawei_vrp"
-    ARISTA_EOS = "arista_eos"
+    CISCO = "cisco"
+    FORTINET = "fortinet"
+    HUAWEI = "huawei"
+    ARISTA = "arista"
+
+    CISCO_IOS = "cisco"
+    CISCO_NXOS = "cisco"
+    CISCO_IOSXE = "cisco"
+    CISCO_IOSXR = "cisco"
+    FORTINET_FORTIOS = "fortinet"
+    HUAWEI_VRP = "huawei"
+    ARISTA_EOS = "arista"
     UNKNOWN = "unknown"
 
 
@@ -53,6 +70,7 @@ class Device(BaseModel):
     hostname: str = Field(..., description="Device hostname")
     vendor: VendorType = Field(..., description="Vendor / OS type")
     os_version: Optional[str] = Field(None, description="OS version string")
+    os_type: Optional[OSType] = Field(None, description="Operating system type")
     model: Optional[str] = Field(None, description="Hardware model")
     serial_number: Optional[str] = Field(None, description="Chassis serial number")
 
@@ -66,6 +84,10 @@ class Device(BaseModel):
     bgp_processes: list[BGPProcess] = Field(
         default_factory=list, description="BGP routing processes"
     )
+    vrfs: list[VRF] = Field(default_factory=list, description="VRF definitions")
+
+    # VXLAN constructs
+    vxlan_vni_mappings: dict[int, int] = Field(default_factory=dict, description="VXLAN VNI mappings {vlan_id: vni}")
 
     # Security constructs
     acls: list[ACL] = Field(default_factory=list, description="Access control lists")

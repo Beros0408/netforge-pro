@@ -144,6 +144,45 @@ class Interface(BaseModel):
         return None
 
     @property
+    def ipv4_addresses(self) -> list[str]:
+        """Compatibility helper for older parser field names."""
+        addresses: list[str] = []
+        if self.ip_address and self.prefix_length is not None:
+            addresses.append(f"{self.ip_address}/{self.prefix_length}")
+        elif self.ip_address:
+            addresses.append(self.ip_address)
+        addresses.extend(self.secondary_ips)
+        return addresses
+
+    @property
+    def enabled(self) -> bool:
+        """Compatibility helper for older parser field names."""
+        return self.admin_status
+
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        object.__setattr__(self, "admin_status", bool(value))
+
+    @property
+    def mode(self) -> SwitchportMode:
+        """Compatibility helper for older parser field names."""
+        return self.switchport_mode
+
+    @mode.setter
+    def mode(self, value: SwitchportMode) -> None:
+        object.__setattr__(self, "switchport_mode", value)
+
+    @property
+    def trunk_allowed_vlans(self) -> list[int]:
+        """Compatibility helper for older parser field names."""
+        return self.trunk_vlans
+
+    @property
+    def type(self) -> InterfaceType:
+        """Compatibility helper for older parser field names."""
+        return self.interface_type
+
+    @property
     def is_layer3(self) -> bool:
         """True when a routable IP address is configured."""
         return self.ip_address is not None

@@ -69,6 +69,11 @@ class Route(BaseModel):
         via = self.next_hop or self.exit_interface or "?"
         return f"Route({self.protocol.value}) {dest} via {via}"
 
+    @property
+    def distance(self) -> Optional[int]:
+        """Compatibility alias for administrative distance."""
+        return self.admin_distance
+
 
 # ---------------------------------------------------------------------------
 # OSPF
@@ -94,9 +99,14 @@ class OSPFRedistribution(BaseModel):
 
     source_protocol: str = Field(..., description="Protocol being redistributed")
     metric: Optional[int] = Field(None, description="Redistribution metric")
-    metric_type: Optional[int] = Field(None, ge=1, le=2, description="External metric type (1 or 2)")
+    metric_type: Optional[int] = Field(None, description="External metric type (1 or 2)")
     subnets: bool = Field(default=True, description="Include subnets")
     route_map: Optional[str] = Field(None, description="Route-map applied during redistribution")
+
+    @property
+    def protocol(self) -> str:
+        """Compatibility alias for older field names."""
+        return self.source_protocol
 
 
 class OSPFProcess(BaseModel):
@@ -147,10 +157,16 @@ class BGPNeighbor(BaseModel):
     description: Optional[str] = Field(None, description="Peer description")
     update_source: Optional[str] = Field(None, description="Source interface")
     next_hop_self: bool = Field(default=False)
+    peer_group: Optional[str] = Field(None, description="BGP peer group")
     route_map_in: Optional[str] = Field(None, description="Inbound route-map")
     route_map_out: Optional[str] = Field(None, description="Outbound route-map")
     password: Optional[str] = Field(None, description="MD5 password (masked)")
     shutdown: bool = Field(default=False)
+
+    @property
+    def ip(self) -> str:
+        """Compatibility helper for older parser field names."""
+        return self.address
 
 
 class BGPNetwork(BaseModel):
@@ -178,3 +194,17 @@ class BGPProcess(BaseModel):
     neighbors: list[BGPNeighbor] = Field(default_factory=list)
     networks: list[BGPNetwork] = Field(default_factory=list)
     vrf: Optional[str] = Field(None, description="VRF name")
+
+    @property
+    def asn(self) -> int:
+        """Compatibility helper for older parser field names."""
+        return self.local_as
+
+
+class VRF(BaseModel):
+    """A VPN instance / VRF definition."""
+
+    name: str = Field(..., description="VRF name")
+    rd: Optional[str] = Field(None, description="Route distinguisher")
+    rt_import: list[str] = Field(default_factory=list, description="Import route-targets")
+    rt_export: list[str] = Field(default_factory=list, description="Export route-targets")
