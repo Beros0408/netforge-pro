@@ -28,6 +28,7 @@ dependencies = [
     "black>=23.0.0",
     "flake8>=6.0.0",
     "mypy>=1.7.0",
+    "neo4j>=5.0.0",
 ]
 
 [project.optional-dependencies]

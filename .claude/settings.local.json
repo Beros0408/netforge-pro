@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m py_compile src/parser_engine/parsers/arista/eos_parser.py)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(python -m pytest src/parser_engine/tests/ -v --tb=short)",
+      "Bash(python -m pytest src/parser_engine/tests/ --tb=no -q)",
+      "Bash(python -m pytest src/parser_engine/tests/test_huawei_parser.py src/parser_engine/tests/test_cisco_parser.py::TestOSPFParsing::test_ospf_redistribution --tb=short -q)",
+      "Bash(python -m pytest src/parser_engine/tests/test_cisco_parser.py::TestOSPFParsing::test_ospf_redistribution --tb=long -q)",
+      "Bash(python -m pytest src/parser_engine/tests/test_arista_parser.py::TestAristaRouting::test_ospf_redistribution --tb=short -q)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(python -m pytest src/graph_database/tests/test_graph.py -v)",
+      "Bash(python -m pytest src/rule_engine/tests/test_rules.py -v)"
+    ]
+  }
+}
