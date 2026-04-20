@@ -12,7 +12,9 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Bash(python -m pytest src/graph_database/tests/test_graph.py -v)",
-      "Bash(python -m pytest src/rule_engine/tests/test_rules.py -v)"
+      "Bash(python -m pytest src/rule_engine/tests/test_rules.py -v)",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)"
     ]
   }
 }

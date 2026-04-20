@@ -4,12 +4,11 @@ import { useProblems } from '../../hooks/useProblems';
 import { Header } from '../shared/Header';
 import { NetworkCanvas } from '../canvas/NetworkCanvas';
 import { PortPanel } from '../panels/PortPanel';
-import { ProblemsPanel } from '../panels/ProblemsPanel';
 import type { NetworkDevice } from '../../types/network';
 
 export function Dashboard() {
   const { topology, devices, loading, demoMode, lastUpdated, refresh } = useNetworkData();
-  const { problems, securityScore, loading: probLoading, refresh: refreshProblems } = useProblems(devices);
+  const { problems, loading: probLoading, refresh: refreshProblems } = useProblems(devices);
   const [selectedDevice, setSelectedDevice] = useState<NetworkDevice | null>(null);
 
   const handleRefresh = () => {
@@ -29,30 +28,30 @@ export function Dashboard() {
       />
 
       <div className="flex flex-1 min-h-0">
-        {/* Canvas area */}
+        {/* Full-width canvas */}
         <div className="flex-1 relative min-w-0">
           {topology ? (
             <NetworkCanvas
               topology={topology}
               problems={problems}
+              activeTool="select"
               onDeviceSelect={setSelectedDevice}
             />
           ) : loading ? (
             <div className="flex items-center justify-center h-full text-slate-500 text-sm">
-              Chargement…
+              Chargement de la topologie…
             </div>
           ) : (
             <div className="flex items-center justify-center h-full text-slate-500 text-sm">
-              Aucune donnée de topologie
+              Aucune donnée disponible
             </div>
           )}
         </div>
 
-        {/* Right panels */}
+        {/* Port panel — slides in when a device is selected */}
         {selectedDevice && (
           <PortPanel device={selectedDevice} onClose={() => setSelectedDevice(null)} />
         )}
-        <ProblemsPanel problems={problems} securityScore={securityScore} />
       </div>
     </div>
   );
