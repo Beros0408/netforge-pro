@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── NetForge Pro Design Tokens ─── */
+:root {
+  --bg-base:          #0a0f1e;
+  --bg-surface:       #0f1729;
+  --bg-elevated:      #1a2236;
+  --bg-interactive:   #1e2d45;
+  --border-default:   #1e2d45;
+  --border-strong:    #3d5a80;
+  --text-primary:     #e8edf5;
+  --text-secondary:   #8ba3c7;
+  --text-muted:       #4a6080;
+  --accent-cisco:     #049fd9;
+  --accent-fortinet:  #ef4444;
+  --accent-huawei:    #dc2626;
+  --accent-arista:    #6b7280;
+  --accent-green:     #10b981;
+  --accent-amber:     #f59e0b;
+  --accent-red:       #ef4444;
+}
+
 /* ReactFlow overrides */
 .react-flow__renderer {
   background: #020617;

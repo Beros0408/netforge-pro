@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { NetworkDevice } from '../../types/network';
 import { useNetworkData } from '../../hooks/useNetworkData';
 import { useProblems } from '../../hooks/useProblems';
 import { TopMenuBar, ActiveTool } from './TopMenuBar';
@@ -7,6 +6,8 @@ import { DevicePalette } from '../palette/DevicePalette';
 import { OutlinePanel } from '../outline/OutlinePanel';
 import { PropertiesPanel } from '../properties/PropertiesPanel';
 import { NetworkCanvas, NetworkCanvasHandle } from '../canvas/NetworkCanvas';
+import type { DeviceNodeData } from '../canvas/DeviceNode';
+import type { NetworkDevice } from '../../types/network';
 
 // ---------------------------------------------------------------------------
 // Resize divider
@@ -89,6 +90,9 @@ export function MainLayout() {
   const { problems, refresh: refreshProblems } = useProblems(devices);
 
   const [selectedDevice, setSelectedDevice] = useState<NetworkDevice | null>(null);
+  const handleDeviceSelect = useCallback((_data: DeviceNodeData | null) => {
+    setSelectedDevice(null);
+  }, []);
   const [activeTool,     setActiveTool]     = useState<ActiveTool>('select');
 
   // Panel sizes
@@ -175,13 +179,10 @@ export function MainLayout() {
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, overflow: 'hidden' }}>
           {/* Canvas area */}
           <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
-            {topology ? (
+            {!loading ? (
               <NetworkCanvas
                 ref={canvasRef}
-                topology={topology}
-                problems={problems}
-                activeTool={activeTool}
-                onDeviceSelect={setSelectedDevice}
+                onDeviceSelect={handleDeviceSelect}
               />
             ) : loading ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#475569', fontSize: 13 }}>
